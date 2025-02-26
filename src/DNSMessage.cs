@@ -4,7 +4,7 @@ internal class DNSMessage
 {
     internal byte[] Message => GetMessage();
 
-    internal byte[] GetMessage()
+    private byte[] GetMessage()
     {
         var bitArray = new BitArray(96);
         bitArray.SetAll(false);
@@ -15,7 +15,7 @@ internal class DNSMessage
         return result;
     }
 
-    internal int PacketIdentifier { get; set; } = 1234;
+    internal Int16 PacketIdentifier { get; set; } = 1234;
 
     private BitArray _packetIdentifierBits => new BitArray(BitConverter.GetBytes(PacketIdentifier));
 

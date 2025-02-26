@@ -3,6 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
+var testMessage = new DNSMessage();
+byte[] testResponse = testMessage.Message;
+
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
 
@@ -25,7 +28,7 @@ while (true)
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
 
     var message = new DNSMessage();
-    byte[] response = message.GetMessage();
+    byte[] response = message.Message;
 
     // Send response
     udpClient.Send(response, response.Length, sourceEndPoint);
