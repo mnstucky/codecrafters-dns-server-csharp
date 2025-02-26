@@ -15,7 +15,7 @@ internal class DNSMessage
         return result;
     }
 
-    internal Int16 PacketIdentifier { get; set; } = 1234;
+    internal ushort PacketIdentifier { get; set; } = 1234;
 
     private BitArray _packetIdentifierBits => new BitArray(BitConverter.GetBytes(PacketIdentifier));
 
