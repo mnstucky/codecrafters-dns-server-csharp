@@ -11,7 +11,6 @@ internal record DNSQuestion(string Name, int Type, int Class)
             var name = "";
             while (packet[i] != 0x00)
             {
-                Console.WriteLine(Encoding.ASCII.GetString(packet, i, 1));
                 if (!string.IsNullOrEmpty(name))
                 {
                     name += ".";
@@ -25,6 +24,7 @@ internal record DNSQuestion(string Name, int Type, int Class)
             var classEncoded = packet[i + 3] << 8 | packet[i + 4];
             result.Add(new DNSQuestion(name, type, classEncoded));
             i += 5;
+            Console.WriteLine(name);
         }
         return result;
     }
