@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data.SqlTypes;
 
 internal record DNSMessage(ushort PacketIdentifier,
                            bool QueryResponseIndicator,
@@ -13,6 +14,20 @@ internal record DNSMessage(ushort PacketIdentifier,
                            int AuthorityRecordCount = 0,
                            int AdditionalRecordCount = 0)
 {
+    internal static DNSMessage GetResponseFromPacket(byte[] packet)
+    {
+        var opCode = packet[2] & 0b01111000 >> 3;
+        return new DNSMessage(
+            PacketIdentifier: (ushort)(packet[0] << 8 | packet[1]),
+            QueryResponseIndicator: true,
+            Questions: [],
+            Answers: [],
+            OperationCode: opCode,
+            RecursionDesired: (packet[2] & 0b00000001 >> 7) == 1,
+            ResponseCode: opCode == 0 ? 0 : 4
+        );
+    }
+
     internal byte[] MessageBytes => [.. GetHeaderBytes()
         .Concat(GetQuestionBytes())
         .Concat(GetAnswerBytes())];
