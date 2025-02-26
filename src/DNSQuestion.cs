@@ -29,12 +29,6 @@ internal record DNSQuestion(string Name, int Type, int Class)
             result.Add(new DNSQuestion(name, type, classEncoded));
             i += 5;
         }
-        while (packet[i] != 0x00)
-        {
-            var nameLength = packet[i];
-            var name = Encoding.ASCII.GetString(packet, i, nameLength);
-            Console.WriteLine(name);
-        }
         return result;
     }
 
