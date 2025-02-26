@@ -23,7 +23,7 @@ internal record DNSMessage(ushort PacketIdentifier,
             Questions: [],
             Answers: [],
             OperationCode: opCode,
-            RecursionDesired: (packet[2] & 0b00000001 >> 7) == 1,
+            RecursionDesired: (packet[2] & 0b00000001) == 1,
             ResponseCode: opCode == 0 ? 0 : 4
         );
     }
