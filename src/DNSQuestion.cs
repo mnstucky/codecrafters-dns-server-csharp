@@ -2,6 +2,12 @@ using System.Text;
 
 internal record DNSQuestion(string Name, int Type, int Class)
 {
+    internal static List<DNSQuestion> GetDNSQuestionsFromPacket(byte[] packet)
+    {
+        var result = new List<DNSQuestion>();
+        return result;
+    }
+
     internal byte[] QuestionBytes => GetQuestionBytes();
 
     private byte[] GetQuestionBytes()

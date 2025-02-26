@@ -17,10 +17,11 @@ internal record DNSMessage(ushort PacketIdentifier,
     internal static DNSMessage GetResponseFromPacket(byte[] packet)
     {
         var opCode = (packet[2] & 0b01111000) >> 3;
+        var questions = DNSQuestion.GetDNSQuestionsFromPacket(packet);
         return new DNSMessage(
             PacketIdentifier: (ushort)(packet[0] << 8 | packet[1]),
             QueryResponseIndicator: true,
-            Questions: [new("codecrafters.io", 1, 1)],
+            Questions: questions,
             Answers: [new("codecrafters.io", 1, 1, 60, [new("8.8.8.8")])],
             OperationCode: opCode,
             RecursionDesired: (packet[2] & 0b00000001) == 1,
