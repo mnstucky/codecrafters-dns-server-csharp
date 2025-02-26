@@ -16,7 +16,7 @@ internal record DNSMessage(ushort PacketIdentifier,
 {
     internal static DNSMessage GetResponseFromPacket(byte[] packet)
     {
-        var opCode = packet[2] & 0b01111000 >> 3;
+        var opCode = (packet[2] & 0b01111000) >> 3;
         return new DNSMessage(
             PacketIdentifier: (ushort)(packet[0] << 8 | packet[1]),
             QueryResponseIndicator: true,
