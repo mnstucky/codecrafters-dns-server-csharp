@@ -22,7 +22,7 @@ internal record DNSMessage(ushort PacketIdentifier,
             PacketIdentifier: (ushort)(packet[0] << 8 | packet[1]),
             QueryResponseIndicator: true,
             Questions: questions,
-            Answers: [new("codecrafters.io", 1, 1, 60, [new("8.8.8.8")])],
+            Answers: questions.Select(q => new DNSAnswer(q.Name, q.Type, q.Class, 60, [new("8.8.8.8")])),
             OperationCode: opCode,
             RecursionDesired: (packet[2] & 0b00000001) == 1,
             ResponseCode: opCode == 0 ? 0 : 4
