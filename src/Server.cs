@@ -3,9 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-var testMessage = new DNSMessage();
-byte[] testResponse = testMessage.Message;
-
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
 

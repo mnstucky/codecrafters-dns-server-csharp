@@ -6,29 +6,62 @@ internal class DNSMessage
 
     private byte[] GetMessage()
     {
-        var bitArray = new BitArray(96);
-        bitArray.SetAll(false);
-        CopyBitArray(_packetIdentifierBits, bitArray, 0);
-        bitArray.Set(17, true);
         var result = new byte[12];
-        bitArray.CopyTo(result, 0);
+        // Set half of ID
+        result[0] = (byte)(PacketIdentifier >> 8);
+        // Set other half; mask to keep only 8 bits
+        result[1] = (byte)(PacketIdentifier & 0b11111111);
+        result[2] = (byte)(
+            // First bit
+            (QueryResponseIndicator ? 1 : 0) << 7 |
+            // Next four bits, masked in case OperationCode is too long
+            (OperationCode & 0b1111) << 3 |
+            // Sixth bit
+            (AuthoritativeAnswer ? 1 : 0) << 2 |
+            // Seventh bit
+            (Truncation ? 1 : 0) >> 1 |
+            // Eighth bit
+            (RecursionDesired ? 1 : 0)
+            );
+        result[3] = (byte)(
+            // First bit
+            (RecursionAvailable ? 1 : 0) << 7 |
+            // Three bits reserved
+            // Last four bits, masked in case ResponseCode is too long
+            (ResponseCode & 0b1111)
+        );
+        result[4] = (byte)(QuestionCount >> 8);
+        result[5] = (byte)(QuestionCount & 0b11111111);
+        result[6] = (byte)(AnswerRecordCount >> 8);
+        result[7] = (byte)(AnswerRecordCount & 0b11111111);
+        result[8] = (byte)(AuthorityRecordCount >> 8);
+        result[9] = (byte)(AuthorityRecordCount & 0b11111111);
+        result[10] = (byte)(AdditionalRecordCount >> 8);
+        result[11] = (byte)(AdditionalRecordCount & 0b11111111);
         return result;
     }
 
     internal ushort PacketIdentifier { get; set; } = 1234;
 
-    private BitArray _packetIdentifierBits => new BitArray(BitConverter.GetBytes(PacketIdentifier));
+    internal bool QueryResponseIndicator { get; set; } = true;
 
-    private static void CopyBitArray(BitArray source, BitArray destination, int startIndex)
-    {
-        if (startIndex + source.Length > destination.Length)
-        {
-            throw new ArgumentException("Destination BitArray is not large enough");
-        }
+    internal int OperationCode { get; set; }
 
-        for (int i = 0; i < source.Length; i++)
-        {
-            destination[startIndex + i] = source[i];
-        }
-    }
+    internal bool AuthoritativeAnswer { get; set; }
+
+    internal bool Truncation { get; set; }
+
+    internal bool RecursionDesired { get; set; }
+
+    internal bool RecursionAvailable { get; set; }
+
+    internal int ResponseCode { get; set; }
+
+    internal int QuestionCount { get; set; }
+
+    internal int AnswerRecordCount { get; set; }
+
+    internal int AuthorityRecordCount { get; set; }
+
+    internal int AdditionalRecordCount { get; set; }
 }
