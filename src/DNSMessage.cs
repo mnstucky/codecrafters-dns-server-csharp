@@ -20,8 +20,8 @@ internal record DNSMessage(ushort PacketIdentifier,
         return new DNSMessage(
             PacketIdentifier: (ushort)(packet[0] << 8 | packet[1]),
             QueryResponseIndicator: true,
-            Questions: [],
-            Answers: [],
+            Questions: [new("codecrafters.io", 1, 1)],
+            Answers: [new("codecrafters.io", 1, 1, 60, [new("8.8.8.8")])],
             OperationCode: opCode,
             RecursionDesired: (packet[2] & 0b00000001) == 1,
             ResponseCode: opCode == 0 ? 0 : 4
