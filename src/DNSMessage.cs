@@ -1,8 +1,21 @@
 using System.Collections;
 
-internal class DNSMessage
+internal record DNSMessage(ushort PacketIdentifier,
+                           bool QueryResponseIndicator,
+                           IEnumerable<DNSQuestion> Questions,
+                           IEnumerable<DNSAnswer> Answers,
+                           int OperationCode = 0,
+                           bool AuthoritativeAnswer = false,
+                           bool Truncation = false,
+                           bool RecursionDesired = false,
+                           bool RecursionAvailable = false,
+                           int ResponseCode = 0,
+                           int AuthorityRecordCount = 0,
+                           int AdditionalRecordCount = 0)
 {
-    internal byte[] MessageBytes => [.. GetHeaderBytes().Concat(GetQuestionBytes())];
+    internal byte[] MessageBytes => [.. GetHeaderBytes()
+        .Concat(GetQuestionBytes())
+        .Concat(GetAnswerBytes())];
 
     private byte[] GetQuestionBytes()
     {
@@ -10,6 +23,16 @@ internal class DNSMessage
         foreach (var question in Questions)
         {
             result.AddRange(question.QuestionBytes);
+        }
+        return [.. result];
+    }
+
+    private byte[] GetAnswerBytes()
+    {
+        var result = new List<byte>();
+        foreach (var answer in Answers)
+        {
+            result.AddRange(answer.AnswerBytes);
         }
         return [.. result];
     }
@@ -51,29 +74,7 @@ internal class DNSMessage
         return result;
     }
 
-    internal ushort PacketIdentifier { get; set; } = 1234;
+    internal int QuestionCount => Questions.Count();
 
-    internal bool QueryResponseIndicator { get; set; } = true;
-
-    internal int OperationCode { get; set; }
-
-    internal bool AuthoritativeAnswer { get; set; }
-
-    internal bool Truncation { get; set; }
-
-    internal bool RecursionDesired { get; set; }
-
-    internal bool RecursionAvailable { get; set; }
-
-    internal int ResponseCode { get; set; }
-
-    internal int QuestionCount => Questions.Count;
-
-    internal int AnswerRecordCount { get; set; }
-
-    internal int AuthorityRecordCount { get; set; }
-
-    internal int AdditionalRecordCount { get; set; }
-
-    internal List<DNSQuestion> Questions { get; set; } = [];
+    internal int AnswerRecordCount => Answers.Count();
 }

@@ -24,10 +24,11 @@ while (true)
 
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
 
-    var message = new DNSMessage()
-    {
-        Questions = [new("codecrafters.io", 1, 1)]
-    };
+    var message = new DNSMessage(
+        PacketIdentifier: 1234,
+        QueryResponseIndicator: true,
+        Questions: new List<DNSQuestion>() { new("codecrafters.io", 1, 1) },
+        Answers: new List<DNSAnswer>() { new("codecrafters.io", 1, 1, 60, new List<DNSIPAddress>() { new("8.8.8.8") }) });
     byte[] response = message.MessageBytes;
 
     // Send response
