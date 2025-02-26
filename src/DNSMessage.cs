@@ -2,9 +2,19 @@ using System.Collections;
 
 internal class DNSMessage
 {
-    internal byte[] Message => GetMessage();
+    internal byte[] MessageBytes => [.. GetHeaderBytes().Concat(GetQuestionBytes())];
 
-    private byte[] GetMessage()
+    private byte[] GetQuestionBytes()
+    {
+        var result = new List<byte>();
+        foreach (var question in Questions)
+        {
+            result.AddRange(question.QuestionBytes);
+        }
+        return [.. result];
+    }
+
+    private byte[] GetHeaderBytes()
     {
         var result = new byte[12];
         // Set half of ID
@@ -57,11 +67,13 @@ internal class DNSMessage
 
     internal int ResponseCode { get; set; }
 
-    internal int QuestionCount { get; set; }
+    internal int QuestionCount => Questions.Count;
 
     internal int AnswerRecordCount { get; set; }
 
     internal int AuthorityRecordCount { get; set; }
 
     internal int AdditionalRecordCount { get; set; }
+
+    internal List<DNSQuestion> Questions { get; set; } = [];
 }

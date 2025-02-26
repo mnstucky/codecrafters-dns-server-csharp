@@ -24,8 +24,11 @@ while (true)
 
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
 
-    var message = new DNSMessage();
-    byte[] response = message.Message;
+    var message = new DNSMessage()
+    {
+        Questions = [new("codecrafters.io", 1, 1)]
+    };
+    byte[] response = message.MessageBytes;
 
     // Send response
     udpClient.Send(response, response.Length, sourceEndPoint);
