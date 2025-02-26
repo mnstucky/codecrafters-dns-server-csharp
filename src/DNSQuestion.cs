@@ -10,6 +10,7 @@ internal record DNSQuestion(string Name, int Type, int Class)
         {
             var nameLength = packet[i];
             var name = Encoding.ASCII.GetString(packet, i, nameLength);
+            Console.WriteLine(name);
             var type = packet[i + nameLength + 1] << 8 | packet[i + nameLength + 2];
             var classEncoded = packet[i + nameLength + 3] << 8 | packet[i + nameLength + 4];
             result.Add(new DNSQuestion(name, type, classEncoded));
