@@ -13,7 +13,6 @@ internal record DNSAnswer(string Name,
         var result = new List<byte>();
         foreach (var label in Name.Split('.'))
         {
-            result.Add((byte)label.Length);
             result.AddRange(Encoding.ASCII.GetBytes(label));
         }
         result.Add(0x00);

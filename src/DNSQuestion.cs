@@ -20,12 +20,9 @@ internal record DNSQuestion(string Name, int Type, int Class)
                 var nameSection = Encoding.ASCII.GetString(packet, i, nameLength + 1);
                 name += nameSection;
                 i += nameLength + 1;
-                Console.WriteLine(name);
             }
             var type = packet[i + 1] << 8 | packet[i + 2];
-            Console.WriteLine(type);
             var classEncoded = packet[i + 3] << 8 | packet[i + 4];
-            Console.WriteLine(classEncoded);
             result.Add(new DNSQuestion(name, type, classEncoded));
             i += 5;
         }
