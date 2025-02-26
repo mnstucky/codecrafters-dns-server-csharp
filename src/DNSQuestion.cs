@@ -19,7 +19,7 @@ internal record DNSQuestion(string Name, int Type, int Class)
                 var nameLength = packet[i];
                 var nameSection = Encoding.ASCII.GetString(packet, i, nameLength + 1);
                 name += nameSection;
-                i += nameLength;
+                i += nameLength + 1;
                 Console.WriteLine(name);
             }
             var type = packet[i + 1] << 8 | packet[i + 2];
