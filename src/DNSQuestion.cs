@@ -8,13 +8,31 @@ internal record DNSQuestion(string Name, int Type, int Class)
         int i = 12;
         while (i < packet.Length)
         {
+            var name = "";
+            while (packet[i] != 0x00)
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    name += ".";
+                }
+                var nameLength = packet[i];
+                var nameSection = Encoding.ASCII.GetString(packet, i, nameLength);
+                name += nameSection;
+                i += nameLength;
+                Console.WriteLine(name);
+            }
+            var type = packet[i + 1] << 8 | packet[i + 2];
+            Console.WriteLine(type);
+            var classEncoded = packet[i + 3] << 8 | packet[i + 4];
+            Console.WriteLine(classEncoded);
+            result.Add(new DNSQuestion(name, type, classEncoded));
+            i += 5;
+        }
+        while (packet[i] != 0x00)
+        {
             var nameLength = packet[i];
             var name = Encoding.ASCII.GetString(packet, i, nameLength);
             Console.WriteLine(name);
-            var type = packet[i + nameLength + 1] << 8 | packet[i + nameLength + 2];
-            var classEncoded = packet[i + nameLength + 3] << 8 | packet[i + nameLength + 4];
-            result.Add(new DNSQuestion(name, type, classEncoded));
-            i += nameLength + 6;
         }
         return result;
     }
